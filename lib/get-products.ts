@@ -1,15 +1,37 @@
-const Airtable = require("airtable")
+import Airtable from "airtable"
+
+interface Record {
+  id: string
+  fields: any
+}
 
 const base = new Airtable({
-  apiKey: process.env.AIRTABLE_API_KEY,
-}).base(process.env.AIRTABLE_BASE_ID)
+  apiKey: process.env.AIRTABLE_API_KEY as string,
+}).base(process.env.AIRTABLE_BASE_ID as string)
 
-const table = base(process.env.AIRTABLE_TABLE_NAME)
+const table = base(process.env.AIRTABLE_TABLE_NAME as string)
 
-export default async function getProduts() {
-  const records = await table.select({}).all()
+function getMinifiedRecords(records: ReadonlyArray<Record>): Record[] {
+  return records.map(function (record: Record) {
+    return minifyRecord(record)
+  })
+}
 
-  console.log(records)
+function minifyRecord(record: Record): Record {
+  return {
+    id: record.id,
+    fields: record.fields,
+  }
+}
 
-  return records
+export async function getProducts(): Promise<Record[]> {
+  const records: ReadonlyArray<Record> = (await table
+    .select({})
+    .all()) as ReadonlyArray<Record>
+
+  const minifiedRecords: Record[] = await getMinifiedRecords(records)
+
+  console.log(minifiedRecords)
+
+  return minifiedRecords
 }
