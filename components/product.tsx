@@ -2,13 +2,7 @@ import Image from "next/image"
 
 import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-
-interface Product {
-  name: string
-  id: number
-  price: number
-  description: string
-}
+import { Product } from "@/lib/types"
 
 interface ProductProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Product
@@ -18,40 +12,32 @@ interface ProductProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Product({
-  product,
-  aspectRatio = "portrait",
+  product: { name, description, price, url },
+  aspectRatio,
   width,
   height,
   className,
   ...props
 }: ProductProps) {
+  // console.log(url)
   return (
     <div className={cn("space-y-3", className)} {...props}>
       <div className="overflow-hidden rounded-md">
-        {/* <Image
-          src="https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
-          alt="Photo by Drew Beamer"
-          width={width}
-          height={height}
-          className={cn(
-            "h-auto w-auto object-cover transition-all hover:scale-105",
-            aspectRatio === "portrait" ? "aspect-[3/4]" : "aspect-square"
-          )}
-        /> */}
         <Image
-          src="https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
+          src={url}
           alt=""
           width={width}
           height={height}
           className={cn(
-            "h-auto w-auto object-cover transition-all hover:scale-105",
+            "h-auto w-auto object-contain transition-all hover:scale-105",
             aspectRatio === "portrait" ? "aspect-[3/4]" : "aspect-square"
           )}
         />
       </div>
       <div className="space-y-1 text-sm">
-        <h3 className="font-medium leading-none">{product.name}</h3>
-        <p className="text-xs text-muted-foreground">{product.price}</p>
+        <h3 className="font-medium leading-none">{name}</h3>
+        <p className="font-sm font-muted-foreground">{description}</p>
+        <p className="font-medium leading-none">${price}</p>
       </div>
     </div>
   )

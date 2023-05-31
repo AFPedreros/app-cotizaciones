@@ -2,7 +2,7 @@ import Airtable from "airtable"
 
 interface Record {
   id: string
-  fields: any
+  fields: Airtable.FieldSet
 }
 
 const base = new Airtable({
@@ -24,14 +24,22 @@ function minifyRecord(record: Record): Record {
   }
 }
 
-export async function getProducts(): Promise<Record[]> {
+export async function getProducts() {
   const records: ReadonlyArray<Record> = (await table
     .select({})
     .all()) as ReadonlyArray<Record>
 
   const minifiedRecords: Record[] = await getMinifiedRecords(records)
 
-  console.log(minifiedRecords)
+  const products = minifiedRecords.map((product) => {
+    return {
+      name: product.fields.Nombre?.toString() ?? "",
+      id: parseInt(product.fields.Id?.toString() ?? "0"), // convert string to number
+      description: product.fields.Descripción?.toString() ?? "0",
+      price: parseFloat(product.fields.Precio?.toLocaleString() ?? "0"), // convert string to number
+      url: product.fields.Imagen?.toString() ?? "",
+    }
+  })
 
-  return minifiedRecords
+  return products
 }
