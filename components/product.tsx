@@ -1,7 +1,6 @@
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Product } from "@/lib/types"
 
 interface ProductProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -19,7 +18,6 @@ export function Product({
   className,
   ...props
 }: ProductProps) {
-  // console.log(url)
   return (
     <div className={cn("space-y-3", className)} {...props}>
       <div className="overflow-hidden rounded-md">
